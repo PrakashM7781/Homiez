@@ -19,20 +19,20 @@ export const signin = async (req, res, next) => {
   const { email, password } = req.body;
   try {
     const validUser = await User.findOne({ email });
-    console.log("ValidUser: " + validUser);
+    // console.log("ValidUser: " + validUser);
     if (!validUser) return next(errorHandler(404, "User not found!"));
     const validPassword = bcryptjs.compareSync(password, validUser.password);
-    console.log("ValidPassword: " + validPassword);
+    // console.log("ValidPassword: " + validPassword);
     if (!validPassword) return next(errorHandler(401, "Wrong credential!"));
     const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
     const { password: pass, ...rest } = validUser._doc;
-    console.log("token: " + token);
+    // console.log("token: " + token);
     res
       .cookie("access_token", token, { httpOnly: true })
       .status(200)
       .json(rest);
   } catch (error) {
-    console.log("in error ");
+    // console.log("in error ");
     next(error);
   }
 };
@@ -60,7 +60,7 @@ export const google = async (req, res, next) => {
         password: hashedPassword,
         avatar: req.body.photo,
       });
-      console.log("in auth controller google: " + JSON.stringify(req.body));
+      // console.log("in auth controller google: " + JSON.stringify(req.body));
       await newUser.save();
       const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
       const { passowrd: pass, ...rest } = newUser._doc;
